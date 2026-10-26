@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Return_Eligible__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Indicates whether this order qualifies for automated 30-day return</description>
+    <label>Is Return Eligible</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

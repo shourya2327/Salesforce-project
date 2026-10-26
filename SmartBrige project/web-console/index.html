@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salesforce Service Cloud | Agentforce AI Customer Support & Automation</title>
+  <meta name="description" content="AI-Powered Customer Support & Service Automation system powered by Salesforce Service Cloud, Flows, and Agentforce (AI Service Agent).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Salesforce+Sans:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Salesforce Lightning Global Header -->
+  <header class="slds-global-header" id="global-header">
+    <div class="header-left">
+      <div class="app-launcher" id="app-launcher-btn" title="App Launcher">
+        <span class="grid-icon"></span>
+      </div>
+      <div class="brand-logo">
+        <svg class="sf-cloud-icon" viewBox="0 0 40 28" fill="none">
+          <path d="M16.5 6C18.2 2.5 21.8 0 26 0C32.1 0 37 4.9 37 11C37 11.6 36.9 12.2 36.8 12.8C38.7 13.8 40 15.7 40 18C40 21.3 37.3 24 34 24H9C4 24 0 20 0 15C0 10.4 3.4 6.7 7.8 6.1C9.4 2.5 13 0 17 0" fill="#0176D3"/>
+        </svg>
+        <div class="app-title">
+          <span class="app-name">Service Cloud</span>
+          <span class="app-badge">Agentforce AI Enabled</span>
+        </div>
+      </div>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" id="tab-console">Service Console</button>
+        <button class="nav-tab" id="tab-analytics">Omni Supervisor & Analytics</button>
+        <button class="nav-tab" id="tab-flows">Automation & Flow Engine</button>
+      </nav>
+    </div>
+
+    <div class="header-center">
+      <div class="global-search-container">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="global-search-input" placeholder="Search Cases, Contacts, Orders (e.g. ORD-9824, Sarah, Refund)..." autocomplete="off">
+        <span class="search-shortcut">⌘K</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- Omni-Channel Status Pill -->
+      <div class="omni-channel-widget" id="omni-widget" title="Omni-Channel Live Presence">
+        <span class="presence-dot status-available"></span>
+        <span class="presence-text" id="omni-status-text">Available (Voice / Cases / Chat)</span>
+        <span class="omni-capacity">2/4 Capacity</span>
+      </div>
+
+      <button class="action-btn-new-case" id="btn-open-new-case-modal">
+        <span class="btn-icon">+</span> New Case
+      </button>
+
+      <div class="user-profile-badge" id="user-profile">
+        <div class="avatar-ring">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Support Agent Avatar" class="agent-avatar">
+        </div>
+        <div class="agent-info">
+          <span class="agent-name">Alex Rivera</span>
+          <span class="agent-role">Tier 2 Service Specialist</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Metric Health Bar / KPI Ribbon -->
+  <section class="kpi-ribbon" id="kpi-ribbon">
+    <div class="kpi-item">
+      <div class="kpi-icon icon-ai">⚡</div>
+      <div class="kpi-details">
+        <span class="kpi-label">Agentforce Deflection Rate</span>
+        <span class="kpi-value text-accent">68.4%</span>
+        <span class="kpi-subtext">▲ +5.2% this week</span>
+      </div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-icon icon-fcr">🎯</div>
+      <div class="kpi-details">
+        <span class="kpi-label">First Contact Resolution</span>
+        <span class="kpi-value">84.2%</span>
+        <span class="kpi-subtext">Automated case triage</span>
+      </div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-icon icon-sla">⏱️</div>
+      <div class="kpi-details">
+        <span class="kpi-label">Active SLA Compliance</span>
+        <span class="kpi-value text-success">98.6%</span>
+        <span class="kpi-subtext">Zero breaches today</span>
+      </div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-icon icon-queue">📂</div>
+      <div class="kpi-details">
+        <span class="kpi-label">Queue Workload</span>
+        <span class="kpi-value" id="kpi-queue-count">6 Active</span>
+        <span class="kpi-subtext">Across 4 routing queues</span>
+      </div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-icon icon-csat">⭐</div>
+      <div class="kpi-details">
+        <span class="kpi-label">Customer Satisfaction (CSAT)</span>
+        <span class="kpi-value text-amber">4.88 / 5.0</span>
+        <span class="kpi-subtext">Post-resolution AI survey</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main 3-Column Service Console Grid -->
+  <main class="console-container" id="main-console">
+    <!-- COLUMN 1: Case Queue List & Navigation -->
+    <aside class="console-sidebar" id="queue-sidebar">
+      <div class="sidebar-header">
+        <div class="queue-selector-box">
+          <label for="queue-filter-select">Queue View</label>
+          <select id="queue-filter-select" class="slds-select">
+            <option value="ALL">All Active Support Cases</option>
+            <option value="Billing_Support_Queue">Billing & Refunds Queue</option>
+            <option value="Returns_Support_Queue">Returns & RMA Queue</option>
+            <option value="Tier_2_Technical_Queue">Tier 2 Technical Support</option>
+            <option value="Tier_1_Customer_Care">Tier 1 Customer Care</option>
+          </select>
+        </div>
+        <div class="queue-meta">
+          <span id="case-count-display">Showing 6 cases</span>
+          <button class="btn-refresh" id="btn-refresh-cases" title="Refresh Queue">🔄</button>
+        </div>
+      </div>
+
+      <!-- Case List -->
+      <div class="case-list-scrollable" id="case-list-container">
+        <!-- Dynamically populated cases via JS -->
+      </div>
+    </aside>
+
+    <!-- COLUMN 2: Workspace / Customer 360 & Case Detail -->
+    <section class="console-workspace" id="case-workspace">
+      <!-- Case Header Highlights Panel -->
+      <div class="workspace-header-card" id="case-header-card">
+        <div class="case-title-row">
+          <div class="case-number-badge">
+            <span class="sf-tag">CASE</span>
+            <h1 class="case-number" id="detail-case-number">0001042</h1>
+          </div>
+          <div class="case-priority-status">
+            <span class="badge priority-high" id="detail-priority-badge">HIGH PRIORITY</span>
+            <span class="badge status-working" id="detail-status-badge">WORKING</span>
+            <span class="sla-timer-badge" id="detail-sla-timer">⏱️ SLA: 1h 48m remaining</span>
+          </div>
+        </div>
+
+        <h2 class="case-subject" id="detail-subject">Defective ANC Headphones - Audio cutting out & request replacement</h2>
+
+        <!-- Action Quick-Bar -->
+        <div class="workspace-action-bar">
+          <button class="action-btn" id="btn-action-refund" title="Process refund or submit for approval">
+            💳 Request Refund Approval
+          </button>
+          <button class="action-btn" id="btn-action-rma" title="Generate prepaid return shipping label">
+            📦 Issue RMA Return Label
+          </button>
+          <button class="action-btn" id="btn-action-reroute" title="Re-route to specialized queue">
+            🔀 Re-route Queue
+          </button>
+          <button class="action-btn" id="btn-action-knowledge" title="Attach verified troubleshooting article">
+            📖 Insert Knowledge
+          </button>
+          <button class="action-btn btn-primary-action" id="btn-action-close">
+            ✅ Resolve & Close Case
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabbed Workspace Content (Customer 360, Feed, Order Details, Flow Log) -->
+      <div class="workspace-tabs-container">
+        <div class="workspace-tabs-nav">
+          <button class="tab-link active" data-tab="tab-details">Customer 360 & Order</button>
+          <button class="tab-link" data-tab="tab-feed">Activity Feed & History</button>
+          <button class="tab-link" data-tab="tab-approval">Approvals & Milestones</button>
+        </div>
+
+        <!-- Tab 1: Customer 360 & Order Details -->
+        <div class="tab-content active" id="tab-details">
+          <div class="customer-360-grid">
+            <!-- Customer Card -->
+            <div class="card slds-box">
+              <div class="card-header">
+                <span class="card-icon">👤</span>
+                <h3>Customer 360 Profile</h3>
+              </div>
+              <div class="card-body customer-info-body">
+                <div class="info-row">
+                  <span class="field-label">Name:</span>
+                  <span class="field-val highlight" id="cust-name">Sarah Jenkins</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Email:</span>
+                  <span class="field-val" id="cust-email">sarah.j@example.com</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Tier Status:</span>
+                  <span class="field-val tag-vip" id="cust-tier">Platinum VIP ($2,450 LTV)</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Customer Sentiment:</span>
+                  <span class="field-val sentiment-meter" id="cust-sentiment">
+                    <span class="sentiment-indicator negative"></span> Frustrated (-0.82)
+                  </span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Open Cases:</span>
+                  <span class="field-val" id="cust-open-cases">1 Active, 4 Historical (100% resolved)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Associated Order Card -->
+            <div class="card slds-box">
+              <div class="card-header">
+                <span class="card-icon">🛍️</span>
+                <h3>Linked Salesforce Order</h3>
+                <span class="badge status-delivered" id="order-status-badge">DELIVERED</span>
+              </div>
+              <div class="card-body">
+                <div class="info-row">
+                  <span class="field-label">Order Reference:</span>
+                  <span class="field-val font-mono text-accent" id="order-number-display">ORD-9824</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Purchased Product:</span>
+                  <span class="field-val font-medium" id="order-product-name">OmniSound Pro Wireless ANC Headphones</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Total Amount:</span>
+                  <span class="field-val font-bold text-success" id="order-amount">$349.99 USD</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Carrier & Tracking:</span>
+                  <span class="field-val font-mono" id="order-tracking">FedEx Express (FEDEX-9405-2819)</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">Warranty Status:</span>
+                  <span class="field-val tag-warranty" id="order-warranty">Active 2-Year Care+ (Expires 2027)</span>
+                </div>
+                <div class="info-row">
+                  <span class="field-label">30-Day Return Window:</span>
+                  <span class="field-val tag-eligible" id="order-return-window">Eligible (Delivered 2 days ago)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow Automation Summary Banner -->
+          <div class="flow-audit-banner">
+            <div class="flow-icon">⚡</div>
+            <div class="flow-audit-text">
+              <strong>Salesforce Record-Triggered Flow Executed:</strong> Inbound message evaluated by <code>CaseAutomationService.cls</code>. Urgency keyword detected, Case Priority set to <strong>High</strong>, SLA Milestone allocated for <strong>2 Hours</strong>, and routed to <strong>Returns & RMA Queue</strong>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Activity Feed & Audit Trail -->
+        <div class="tab-content" id="tab-feed">
+          <div class="timeline-container" id="case-timeline">
+            <!-- Dynamically populated feed -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Approvals & Milestones -->
+        <div class="tab-content" id="tab-approval">
+          <div class="approval-card-box">
+            <div class="card slds-box">
+              <div class="card-header">
+                <span class="card-icon">📑</span>
+                <h3>Salesforce Multi-Level Approval Process</h3>
+              </div>
+              <div class="card-body">
+                <p class="approval-explainer">
+                  Refunds & replacement authorizations above $100.00 require Team Lead sign-off under the standard Service Cloud approval workflow.
+                </p>
+                <div class="approval-status-track" id="approval-track">
+                  <div class="step completed">
+                    <div class="step-num">1</div>
+                    <div class="step-info">
+                      <div class="step-name">Case Ingested</div>
+                      <div class="step-sub">Omni-Channel auto-routing</div>
+                    </div>
+                  </div>
+                  <div class="step active" id="step-approval-node">
+                    <div class="step-num">2</div>
+                    <div class="step-info">
+                      <div class="step-name">Manager Refund Verification</div>
+                      <div class="step-sub" id="step-approval-sub">Threshold: &gt; $100.00 requires review</div>
+                    </div>
+                  </div>
+                  <div class="step" id="step-payout-node">
+                    <div class="step-num">3</div>
+                    <div class="step-info">
+                      <div class="step-name">Stripe / ERP Credit Issued</div>
+                      <div class="step-sub">3-5 business days</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="approval-cta-area">
+                  <div class="approval-callout" id="approval-callout-text">
+                    Pending Refund Request: <strong>$349.99</strong> (Order ORD-9824). Requires Manager approval.
+                  </div>
+                  <div class="approval-buttons">
+                    <button class="btn-approve" id="btn-approve-refund">✓ Approve Refund ($349.99)</button>
+                    <button class="btn-reject" id="btn-reject-refund">✕ Reject Request</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COLUMN 3: Agentforce AI Service Agent & Copilot -->
+    <aside class="console-ai-panel" id="agentforce-panel">
+      <div class="ai-panel-header">
+        <div class="agentforce-brand">
+          <div class="ai-sparkle-icon">✨</div>
+          <div class="ai-agent-details">
+            <span class="ai-name">Agentforce AI Service Agent</span>
+            <span class="ai-model-tag">Einstein 1 Reasoning Engine</span>
+          </div>
+        </div>
+        <div class="ai-status-chip">Autonomous Active</div>
+      </div>
+
+      <!-- Quick Prompt Pills -->
+      <div class="ai-quick-actions">
+        <button class="quick-chip" data-query="Where is order ORD-9824?">📦 Lookup ORD-9824</button>
+        <button class="quick-chip" data-query="Process a return label for Sarah Jenkins">🏷️ Generate Return Label</button>
+        <button class="quick-chip" data-query="Draft polite refund confirmation email">✍️ Draft Resolution Email</button>
+        <button class="quick-chip" data-query="How do I factory reset OmniSound Headphones?">📖 Knowledge Article Lookup</button>
+      </div>
+
+      <!-- Conversation Stream -->
+      <div class="ai-chat-messages" id="ai-chat-stream">
+        <div class="ai-bubble agent">
+          <div class="bubble-sender">Agentforce Service Agent</div>
+          <div class="bubble-text">
+            Hello! I am connected to your Salesforce Service Cloud instance. I have autonomously analyzed Case <strong>#0001042</strong>, inspected linked Order <strong>ORD-9824</strong>, and checked customer warranty records.
+          </div>
+          <div class="ai-action-card">
+            <div class="action-card-header">Recommended Next Best Action</div>
+            <div class="action-card-body">
+              Customer Sarah Jenkins is return-eligible with an active warranty. Suggest issuing an instant pre-paid RMA replacement or authorizing refund.
+            </div>
+            <button class="btn-run-action" id="btn-auto-rma">⚡ Execute 1-Click Return Label</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Interactive Input -->
+      <div class="ai-chat-input-bar">
+        <input type="text" id="ai-input" placeholder="Ask Agentforce to lookup data, route cases, or draft answers..." autocomplete="off">
+        <button class="btn-ai-send" id="btn-send-ai" title="Send to Agentforce">
+          <svg viewBox="0 0 24 24" fill="none" class="send-icon">
+            <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- MODAL 1: Create New Case & Trigger Automation -->
+  <div class="modal-overlay hidden" id="modal-new-case">
+    <div class="modal-content slds-modal">
+      <div class="modal-header">
+        <h2>Create Inbound Support Case (Test AI Auto-Routing)</h2>
+        <button class="modal-close-btn" id="btn-close-new-case-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-sub">
+          Submitting this case will trigger <code>CaseAutomationService.cls</code> and the Salesforce Record-Triggered Flow to auto-calculate Sentiment, Priority, and Queue assignment.
+        </p>
+        <form id="form-new-case">
+          <div class="form-group">
+            <label for="input-case-contact">Customer Name</label>
+            <input type="text" id="input-case-contact" required value="David Miller">
+          </div>
+          <div class="form-group">
+            <label for="input-case-email">Customer Email</label>
+            <input type="email" id="input-case-email" required value="david.miller@acme.com">
+          </div>
+          <div class="form-group">
+            <label for="input-case-subject">Subject</label>
+            <input type="text" id="input-case-subject" required placeholder="e.g. Urgent billing error or Product defective...">
+          </div>
+          <div class="form-group">
+            <label for="input-case-desc">Description / Customer Message</label>
+            <textarea id="input-case-desc" rows="4" required placeholder="Describe the customer issue. Use words like 'urgent', 'refund', 'tracking', or 'broken' to test the AI classifier..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="input-case-order">Associated Order (Optional)</label>
+            <input type="text" id="input-case-order" value="ORD-7612" placeholder="e.g. ORD-9824 or ORD-7612">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" id="btn-cancel-new-case">Cancel</button>
+            <button type="submit" class="btn-submit-case">Submit Case & Run Automation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: RMA Label Generated Preview -->
+  <div class="modal-overlay hidden" id="modal-rma">
+    <div class="modal-content slds-modal modal-sm">
+      <div class="modal-header">
+        <h2>Pre-paid Return Shipping Label (RMA)</h2>
+        <button class="modal-close-btn" id="btn-close-rma-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rma-ticket">
+          <div class="rma-barcode">|||||| | |||||||| ||||| |||||||</div>
+          <div class="rma-code" id="rma-tracking-code">RMA-8491-US-RETURN</div>
+          <div class="rma-details">
+            <p><strong>Carrier:</strong> FedEx Ground Prepaid Return</p>
+            <p><strong>Recipient:</strong> Salesforce Fulfillment & Service Hub</p>
+            <p><strong>Customer:</strong> <span id="rma-cust-name">Sarah Jenkins</span></p>
+            <p><strong>Status:</strong> Dispatched via Automated Email</p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-submit-case" id="btn-done-rma">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
